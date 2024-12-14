@@ -1,3 +1,4 @@
+import type { RequestEvent } from '@sveltejs/kit';
 import { tastytradeApi } from './tastytradeClient';
 import type {
 	loginResponse,
@@ -5,6 +6,9 @@ import type {
 	TastytradePostSessionResponse,
 	validateSessionResponse
 } from './auth.types.ts';
+
+export const sessionTokenCookieName = 'auth-session';
+export const sessionRememberCookieName = 'auth-remember';
 
 export const login = async (username: string, password: string): Promise<loginResponse> => {
 	try {
@@ -55,4 +59,28 @@ export const validateSession = async (): Promise<validateSessionResponse> => {
 			user: null
 		};
 	}
+};
+
+export const setSessionTokenCookie = (event: RequestEvent, sessionToken: string) => {
+	event.cookies.set(sessionTokenCookieName, sessionToken, {
+		path: '/'
+	});
+};
+
+export const deleteSessionTokenCookie = (event: RequestEvent) => {
+	event.cookies.delete(sessionTokenCookieName, {
+		path: '/'
+	});
+};
+
+export const setRememberTokenCookie = (event: RequestEvent, rememberToken: string) => {
+	event.cookies.set(sessionRememberCookieName, rememberToken, {
+		path: '/'
+	});
+};
+
+export const deleteRememberTokenCookie = (event: RequestEvent) => {
+	event.cookies.delete('remember-token', {
+		path: '/'
+	});
 };
