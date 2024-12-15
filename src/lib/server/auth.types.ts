@@ -1,20 +1,4 @@
-export interface TastytradeGenericResponse<Error, T> {
-	status: number;
-	error: Error;
-	data: T;
-}
-
-export interface TastytradeErrorResponse {
-	response: {
-		status: number;
-		data: {
-			error: {
-				code?: string;
-				message: string;
-			};
-		};
-	};
-}
+import type { TastytradeGenericResponse, TastytradeErrorResponse } from './server.types';
 
 export interface TastytradePostSessionResponse {
 	user: {

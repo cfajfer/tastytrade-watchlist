@@ -2,10 +2,10 @@ import type { RequestEvent } from '@sveltejs/kit';
 import { tastytradeApi } from './tastytradeClient';
 import type {
 	loginResponse,
-	TastytradeErrorResponse,
 	TastytradePostSessionResponse,
 	validateSessionResponse
-} from './auth.types.ts';
+} from './auth.types';
+import type { TastytradeErrorResponse } from './server.types';
 
 export const sessionTokenCookieName = 'auth-session';
 export const sessionRememberCookieName = 'auth-remember';
