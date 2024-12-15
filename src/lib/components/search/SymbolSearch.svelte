@@ -3,7 +3,13 @@
 	import { Modal, Button, Input } from 'flowbite-svelte';
 	import { onMount } from 'svelte';
 
-	let { watchlistSymbols = $bindable(), selectedWatchlist } = $props();
+	let {
+		watchlistSymbols = $bindable(),
+		selectedWatchlist
+	}: {
+		watchlistSymbols: string[];
+		selectedWatchlist: string;
+	} = $props();
 
 	let isModalOpen = $state<boolean>(false);
 	let searchQuery = $state<string>('');
