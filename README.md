@@ -47,8 +47,8 @@ You can preview the production build with `npm run preview`.
 
 ## DXFeed SDK
 
-- DXLink package does not work: https://github.com/dxFeed/dxLink/issues/12.
+- DXLink package does not work: https://github.com/dxFeed/dxLink/issues/12. (Solved by implementing the websockets w/o the sdk)
 
 ## tastytrade SDK
 
-- symbolSearchService.getSymbolData() method returns 503 Service Unavailable error.
+- symbolSearchService.getSymbolData() method returns 503 Service Unavailable error. (Solved by using the https://vast.tastyworks.com/symbols/search/{SYMBOL} api)
