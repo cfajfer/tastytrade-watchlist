@@ -1,33 +1,20 @@
-# sv
+# **tastytrade-watchlist**
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+## Getting Started
 
-## Creating a project
+Follow these steps to set up and run the project on your local machine:
 
-If you're seeing this, you've probably already done this step. Congrats!
+### Development
 
-```bash
-# create a new project in the current directory
-npx sv create
-
-# create a new project in my-app
-npx sv create my-app
-```
-
-## Developing
-
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+Once you've installed the dependencies with `npm install` start a development server:
 
 ```bash
 npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
 ```
 
-## Building
+### Production
 
-To create a production version of your app:
+To create a production build run:
 
 ```bash
 npm run build
@@ -35,5 +22,33 @@ npm run build
 
 You can preview the production build with `npm run preview`.
 
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
-# tastytrade-watchlist
+## **Features**
+
+### Login
+
+- Login functionality through tastytrade.
+
+### Watchlists
+
+- Create, view, and delete watchlists.
+- Add or remove symbols from watchlists.
+- View bid, ask, and last price information in real-time.
+
+![Watchlist Feature](https://i.gyazo.com/d2163e71e32f97fccdce4b4c42ed06d3.gif)
+
+### Charting
+
+- Five days historical and real-time 1 minute data.
+- TradingView style candlestick charting.
+
+![Chart Feature](https://i.gyazo.com/d2fd1f4bfa5bcba7c3d5cdb11bace243.gif)
+
+## **Notable Issues**
+
+## DXFeed SDK
+
+- DXLink package does not work: https://github.com/dxFeed/dxLink/issues/12.
+
+## tastytrade SDK
+
+- symbolSearchService.getSymbolData() method returns 503 Service Unavailable error.
