@@ -161,7 +161,7 @@
 		);
 	};
 
-	const handleWebScoketKeepAlive = () => {
+	const handleWebSocketKeepAlive = () => {
 		ws.send(
 			JSON.stringify({
 				type: 'KEEPALIVE',
@@ -192,7 +192,7 @@
 			handleWebSocketError,
 			handleWebSocketOpen,
 			handleWebSocketClose,
-			handleWebScoketKeepAlive
+			handleWebSocketKeepAlive
 		);
 	});
 </script>
