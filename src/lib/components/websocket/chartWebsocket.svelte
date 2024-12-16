@@ -15,7 +15,7 @@
 		selectedSymbol: string;
 	} = $props();
 
-	let ws: WebSocket;
+	let ws: WebSocket | null = null;
 
 	let candleData = $state<CandlestickData<Time>[]>([]);
 	let lastPrice = $state<number>(0);
@@ -108,7 +108,7 @@
 
 	const handleWebSocketOpen = () => {
 		console.log('WebSocket connection established');
-		ws.send(
+		ws?.send(
 			JSON.stringify({
 				type: 'SETUP',
 				channel: 0,
@@ -117,14 +117,14 @@
 				acceptKeepaliveTimeout: 60
 			})
 		);
-		ws.send(
+		ws?.send(
 			JSON.stringify({
 				type: 'AUTH',
 				channel: 0,
 				token
 			})
 		);
-		ws.send(
+		ws?.send(
 			JSON.stringify({
 				type: 'CHANNEL_REQUEST',
 				channel: 1,
@@ -132,7 +132,7 @@
 				parameters: { contract: 'AUTO' }
 			})
 		);
-		ws.send(
+		ws?.send(
 			JSON.stringify({
 				type: 'FEED_SETUP',
 				channel: 1,
@@ -144,7 +144,7 @@
 				}
 			})
 		);
-		ws.send(
+		ws?.send(
 			JSON.stringify({
 				type: 'FEED_SUBSCRIPTION',
 				channel: 1,
@@ -162,13 +162,13 @@
 	};
 
 	const handleWebSocketKeepAlive = () => {
-		ws.send(
+		ws?.send(
 			JSON.stringify({
 				type: 'KEEPALIVE',
 				channel: 0
 			})
 		);
-		ws.send(
+		ws?.send(
 			JSON.stringify({
 				type: 'KEEPALIVE',
 				channel: 1
@@ -181,10 +181,19 @@
 	};
 
 	onDestroy(() => {
-		if (ws) ws.close();
+		if (ws) {
+			ws.close();
+			ws = null;
+		}
 	});
 
 	onMount(() => {
+		if (ws) {
+			console.warn('WebSocket already initialized. Closing existing connection.');
+			ws.close();
+			ws = null;
+		}
+
 		// Open WebSocket connection
 		ws = createWebSocket(
 			'wss://tasty-openapi-ws.dxfeed.com/realtime',

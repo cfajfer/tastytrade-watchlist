@@ -13,7 +13,7 @@
 		token: string;
 	} = $props();
 	let subscribedSymbols: string[] = [];
-	let ws: WebSocket;
+	let ws: WebSocket | null = null;
 
 	// Get the difference between the current watchlistSymbols and the subscribedSymbols
 	const getDifference = (watchlistSymbols: string[], subscribedSymbols: string[]): string[] => {
@@ -35,7 +35,7 @@
 	// Send subscription to the WebSocket server
 	const sendSubscription = (symbols: string[]) => {
 		const newSubscriptions = getDifference(symbols, subscribedSymbols);
-		if (newSubscriptions.length > 0 && ws.readyState === 1) {
+		if (newSubscriptions.length > 0 && ws?.readyState === 1) {
 			ws.send(
 				JSON.stringify({
 					type: 'FEED_SUBSCRIPTION',
@@ -85,7 +85,7 @@
 
 	const handleWebSocketOpen = () => {
 		console.log('WebSocket connection established');
-		ws.send(
+		ws?.send(
 			JSON.stringify({
 				type: 'SETUP',
 				channel: 0,
@@ -94,14 +94,14 @@
 				acceptKeepaliveTimeout: 60
 			})
 		);
-		ws.send(
+		ws?.send(
 			JSON.stringify({
 				type: 'AUTH',
 				channel: 0,
 				token
 			})
 		);
-		ws.send(
+		ws?.send(
 			JSON.stringify({
 				type: 'CHANNEL_REQUEST',
 				channel: 3,
@@ -109,7 +109,7 @@
 				parameters: { contract: 'AUTO' }
 			})
 		);
-		ws.send(
+		ws?.send(
 			JSON.stringify({
 				type: 'FEED_SETUP',
 				channel: 3,
@@ -121,7 +121,7 @@
 				}
 			})
 		);
-		ws.send(
+		ws?.send(
 			JSON.stringify({
 				type: 'FEED_SUBSCRIPTION',
 				channel: 3,
@@ -134,13 +134,13 @@
 	};
 
 	const handleWebSocketKeepAlive = () => {
-		ws.send(
+		ws?.send(
 			JSON.stringify({
 				type: 'KEEPALIVE',
 				channel: 0
 			})
 		);
-		ws.send(
+		ws?.send(
 			JSON.stringify({
 				type: 'KEEPALIVE',
 				channel: 3
@@ -149,14 +149,26 @@
 	};
 
 	const handleWebSocketClose = (event: CloseEvent) => {
+		// Dump watchlistData and subscribedSymbols
+		watchlistData = {};
+		subscribedSymbols = [];
 		console.log('WebSocket closed:', event.reason);
 	};
 
 	onDestroy(() => {
-		if (ws) ws.close();
+		if (ws) {
+			ws.close();
+			ws = null;
+		}
 	});
 
 	onMount(() => {
+		if (ws) {
+			console.warn('WebSocket already initialized. Closing existing connection.');
+			ws.close();
+			ws = null;
+		}
+
 		// Open WebSocket connection
 		ws = createWebSocket(
 			'wss://tasty-openapi-ws.dxfeed.com/realtime',
