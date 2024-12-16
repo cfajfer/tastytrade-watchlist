@@ -8,7 +8,11 @@
 	import { Button, Dropdown, DropdownItem } from 'flowbite-svelte';
 	import WatchlistWebsocket from '$lib/components/websocket/watchlistWebsocket.svelte';
 	import ChartWebsocket from '$lib/components/websocket/chartWebsocket.svelte';
-	import type { WatchlistData } from '$lib/server/watchlist.types';
+	import type {
+		TastytradeGetAllWatchlistResponse,
+		WatchlistData
+	} from '$lib/server/watchlist.types';
+	import DeleteWatchlist from '$lib/components/watchlist/DeleteWatchlist.svelte';
 
 	let selectedWatchlist: string = $state('');
 	let watchlistSymbols: string[] = $state([]);
@@ -16,6 +20,10 @@
 	let selectedSymbol: string = $state('');
 	let page: 'watchlist' | 'chart' = $state('watchlist');
 	let { data }: { data: PageServerData } = $props();
+	let watchlists: TastytradeGetAllWatchlistResponse = $state([...data.watchlists]);
+	$effect(() => {
+		watchlists = [...data.watchlists];
+	});
 </script>
 
 <header class="flex items-center justify-between bg-gray-50 p-4 text-black">
@@ -45,8 +53,9 @@
 <div class="p-6">
 	{#if page === 'watchlist'}
 		<div class="mb-6 flex items-center justify-between">
-			<WatchlistSelect bind:selectedWatchlist watchlists={data.watchlists} />
+			<WatchlistSelect bind:selectedWatchlist {watchlists} />
 			<AddWatchlist bind:selectedWatchlist />
+			<DeleteWatchlist bind:selectedWatchlist bind:watchlists />
 		</div>
 		<WatchlistGrid
 			bind:watchlistSymbols

@@ -11,7 +11,7 @@
 	} = $props();
 
 	const sortedWatchlistOptions = $derived(
-		watchlists
+		[...watchlists]
 			.sort((a, b) => a['order-index'] - b['order-index'])
 			.map((watchlist) => {
 				return {

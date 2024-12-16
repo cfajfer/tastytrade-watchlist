@@ -54,13 +54,12 @@ export const DELETE = async ({ request, url }: RequestEvent): Promise<Response> 
 		const body = await request.json();
 		const { watchlistSymbols, symbolToDelete } = body;
 
+		// If watchlistSymbols is not an array or symbolToDelete is not provided, delete the entire watchlist
 		if (!Array.isArray(watchlistSymbols) || !symbolToDelete) {
-			return new Response(
-				JSON.stringify({ error: 'Invalid request body: Missing required fields' }),
-				{ status: 400, headers: { 'Content-Type': 'application/json' } }
-			);
+			await watchlist.deleteWatchlist(watchlistName);
 		}
 
+		// Otherwise, remove the symbol from the watchlist
 		await watchlist.removeSymbolFromWatchlist(watchlistName, watchlistSymbols, symbolToDelete);
 
 		return new Response(null, { status: 200 });

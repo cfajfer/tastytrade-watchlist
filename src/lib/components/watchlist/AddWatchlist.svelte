@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
-	import type { ActionResult } from '@sveltejs/kit';
 	import { Label, Input, Button, Modal } from 'flowbite-svelte';
 
 	let isModalOpen = $state<boolean>(false);
@@ -10,24 +9,12 @@
 		selectedWatchlist: string;
 	} = $props();
 
-	const handleFormEnhance = async (input: { action: URL; formData: FormData }) => {
-		const response = await fetch(input.action, {
-			method: 'POST',
-			body: input.formData,
-			headers: {
-				Accept: 'application/json'
-			}
-		});
+	let watchlistName = $state('');
 
-		const result: ActionResult = await response.json();
-
-		if (result.type === 'success') {
-			const watchlist = input.formData.get('name') as string;
-			selectedWatchlist = watchlist;
-			isModalOpen = false;
-		} else {
-			console.error('Form submission failed', result);
-		}
+	const handleFormEnhance = () => {
+		selectedWatchlist = watchlistName;
+		isModalOpen = false;
+		watchlistName = '';
 	};
 </script>
 
@@ -59,6 +46,7 @@
 						type="text"
 						id="name"
 						placeholder="Type watchlist name..."
+						bind:value={watchlistName}
 						required
 						class="w-full rounded border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-300 focus:ring-opacity-50"
 					/>

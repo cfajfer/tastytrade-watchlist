@@ -59,7 +59,7 @@
 			watchlistSymbols = watchlistSymbolsArr.map(({ symbol }) => symbol);
 		};
 
-		getWatchlistSymbols();
+		if (selectedWatchlist) getWatchlistSymbols();
 	});
 
 	const onClickRow = (symbol: string) => {
