@@ -19,7 +19,7 @@
 	onMount(() => {
 		// Focus the input field and set the value of the input field to the key pressed
 		const handleKeyDown = (event: KeyboardEvent) => {
-			if (event.key) {
+			if (event.key && selectedWatchlist !== '' && !isModalOpen) {
 				isModalOpen = true;
 				const input = document.querySelector('input');
 				if (input) {
@@ -107,6 +107,7 @@
 </script>
 
 <Button
+	disabled={selectedWatchlist === ''}
 	on:click={() => (isModalOpen = true)}
 	class="flex h-10 items-center gap-2 rounded border border-blue-500 bg-transparent px-4 py-2 text-blue-500 transition duration-200 hover:bg-blue-500 hover:text-white"
 >
