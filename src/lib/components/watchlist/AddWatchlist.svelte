@@ -1,8 +1,34 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
+	import type { ActionResult } from '@sveltejs/kit';
 	import { Label, Input, Button, Modal } from 'flowbite-svelte';
 
 	let isModalOpen = $state<boolean>(false);
+	let {
+		selectedWatchlist = $bindable()
+	}: {
+		selectedWatchlist: string;
+	} = $props();
+
+	const handleFormEnhance = async (input: { action: URL; formData: FormData }) => {
+		const response = await fetch(input.action, {
+			method: 'POST',
+			body: input.formData,
+			headers: {
+				Accept: 'application/json'
+			}
+		});
+
+		const result: ActionResult = await response.json();
+
+		if (result.type === 'success') {
+			const watchlist = input.formData.get('name') as string;
+			selectedWatchlist = watchlist;
+			isModalOpen = false;
+		} else {
+			console.error('Form submission failed', result);
+		}
+	};
 </script>
 
 <div class="m-5 flex justify-center">
@@ -23,7 +49,7 @@
 	>
 </div>
 <Modal title="Create Watchlist" bind:open={isModalOpen} class="min-w-full">
-	<form method="POST" action="?/addWatchlist" use:enhance>
+	<form method="POST" action="?/addWatchlist" use:enhance={handleFormEnhance}>
 		<div class="mb-4 flex w-full items-center">
 			<div class="flex w-full items-start gap-4">
 				<div class="flex flex-grow flex-col">

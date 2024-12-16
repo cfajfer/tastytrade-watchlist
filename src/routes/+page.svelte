@@ -46,7 +46,7 @@
 	{#if page === 'watchlist'}
 		<div class="mb-6 flex items-center justify-between">
 			<WatchlistSelect bind:selectedWatchlist watchlists={data.watchlists} />
-			<AddWatchlist />
+			<AddWatchlist bind:selectedWatchlist />
 		</div>
 		<WatchlistGrid
 			bind:watchlistSymbols
