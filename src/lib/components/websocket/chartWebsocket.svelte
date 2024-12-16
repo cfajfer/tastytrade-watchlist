@@ -19,6 +19,18 @@
 
 	let candleData = $state<CandlestickData<Time>[]>([]);
 	let lastPrice = $state<number>(0);
+	let previousLastPrice: number = 0;
+
+	const getClass = (price: number) => {
+		if (!price || !previousLastPrice) return '';
+		if (price > previousLastPrice) return 'text-green-500 transition-colors duration-500';
+		if (price < previousLastPrice) return 'text-red-500 transition-colors duration-500';
+		return '';
+	};
+
+	$effect(() => {
+		previousLastPrice = lastPrice;
+	});
 
 	const options = {
 		width: 900,
@@ -233,7 +245,7 @@
 	<!-- Price Display -->
 	<p class="mb-6 text-lg text-gray-600">
 		Last:
-		<span class="font-bold">${lastPrice}</span>
+		<span class={`${getClass(lastPrice)} text-bold`}>${lastPrice}</span>
 	</p>
 
 	<!-- Chart Container -->
