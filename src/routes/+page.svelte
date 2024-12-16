@@ -7,11 +7,13 @@
 	import SymbolSearch from '$lib/components/search/SymbolSearch.svelte';
 	import { Button, Dropdown, DropdownItem } from 'flowbite-svelte';
 	import WatchlistWebsocket from '$lib/components/websocket/watchlistWebsocket.svelte';
+	import ChartWebsocket from '$lib/components/websocket/chartWebsocket.svelte';
 	import type { WatchlistData } from '$lib/server/watchlist.types';
 
 	let selectedWatchlist: string = $state('');
 	let watchlistSymbols: string[] = $state([]);
 	let watchlistData: WatchlistData = $state({});
+	let selectedSymbol: string = $state('');
 	let page: 'watchlist' | 'chart' = $state('watchlist');
 	let { data }: { data: PageServerData } = $props();
 </script>
@@ -42,10 +44,10 @@
 
 <div class="p-6">
 	{#if page === 'watchlist'}
-	<div class="mb-6 flex items-center justify-between">
-		<WatchlistSelect bind:selectedWatchlist watchlists={data.watchlists} />
-		<AddWatchlist />
-	</div>
+		<div class="mb-6 flex items-center justify-between">
+			<WatchlistSelect bind:selectedWatchlist watchlists={data.watchlists} />
+			<AddWatchlist />
+		</div>
 		<WatchlistGrid
 			bind:watchlistSymbols
 			bind:page
@@ -53,7 +55,10 @@
 			{watchlistData}
 			{selectedWatchlist}
 		/>
-	<SymbolSearch bind:watchlistSymbols {selectedWatchlist} />
+		<SymbolSearch bind:watchlistSymbols {selectedWatchlist} />
 		<WatchlistWebsocket bind:watchlistData {watchlistSymbols} token={data.token} />
+	{/if}
+	{#if page === 'chart'}
+		<ChartWebsocket bind:page bind:selectedSymbol token={data.token} />
 	{/if}
 </div>
