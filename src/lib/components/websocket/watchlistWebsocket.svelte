@@ -140,6 +140,12 @@
 				channel: 0
 			})
 		);
+		ws.send(
+			JSON.stringify({
+				type: 'KEEPALIVE',
+				channel: 3
+			})
+		);
 	};
 
 	const handleWebSocketClose = (event: CloseEvent) => {

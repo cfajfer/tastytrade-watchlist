@@ -59,25 +59,41 @@
 			const eventType = message[0];
 			const messageData = message[1];
 			if (eventType === 'Candle') {
-				// every 8 elements in the messageData array is a new message
+				const updatedCandles: typeof candleData = [...candleData];
+
+				// Every 8 elements in the messageData array is a new message
 				for (let i = 0; i < messageData.length; i += 8) {
 					const [_eventType, _eventSymbol, _eventTime, time, open, high, low, close] =
 						messageData.slice(i, i + 8);
 
-					candleData = [
-						...candleData,
-						{
-							time: (new Date(time).getTime() / 1000) as number,
-							open,
-							high,
-							low,
-							close
-						} as CandlestickData<Time>
-					].sort((a, b) => Number(a.time) - Number(b.time));
+					const newCandle = {
+						time: Math.floor(new Date(time).getTime() / 1000) as Time,
+						open: Number(open),
+						high: Number(high),
+						low: Number(low),
+						close: Number(close)
+					};
+
+					// If this candle already exists, update it
+					const lastCandle = updatedCandles[updatedCandles.length - 1];
+					if (lastCandle?.time === newCandle.time) {
+						updatedCandles[updatedCandles.length - 1] = {
+							...lastCandle,
+							...newCandle
+						};
+					} else {
+						// Otherwise, add the new candle
+						updatedCandles.push(newCandle);
+					}
 				}
+
+				// Sort candles ascending by time
+				updatedCandles.sort((a, b) => Number(a.time) - Number(b.time));
+
+				candleData = updatedCandles;
 			}
 			if (eventType === 'Trade') {
-				// every 3 elements in the messageData array is a new message
+				// Every 3 elements in the messageData array is a new message
 				for (let i = 0; i < messageData.length; i += 3) {
 					const [_eventType, _eventSymbol, price] = messageData.slice(i, i + 3);
 					lastPrice = price;
@@ -152,15 +168,21 @@
 				channel: 0
 			})
 		);
+		ws.send(
+			JSON.stringify({
+				type: 'KEEPALIVE',
+				channel: 1
+			})
+		);
 	};
 
 	const handleWebSocketClose = (event: CloseEvent) => {
 		console.log('WebSocket closed:', event.reason);
 	};
 
-	// onDestroy(() => {
-	// 	if (ws) ws.close();
-	// });
+	onDestroy(() => {
+		if (ws) ws.close();
+	});
 
 	onMount(() => {
 		// Open WebSocket connection
