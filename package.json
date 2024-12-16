@@ -49,6 +49,8 @@
 		"@dxfeed/dxlink-api": "^0.3.0",
 		"@tailwindcss/container-queries": "^0.1.1",
 		"@tailwindcss/forms": "^0.5.9",
-		"@tastytrade/api": "^5.0.0"
+		"@tastytrade/api": "^5.0.0",
+		"lightweight-charts": "^4.2.2",
+		"svelte-lightweight-charts": "^2.2.0"
 	}
 }
