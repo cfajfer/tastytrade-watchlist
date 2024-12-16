@@ -9,6 +9,14 @@ export interface WatchlistEntryWithSymbols extends WatchlistEntry {
 	'watchlist-entries'?: { symbol: string }[];
 }
 
+export interface WatchlistData {
+	[symbol: string]: {
+		last?: number | string;
+		bid?: number | string;
+		ask?: number | string;
+	};
+}
+
 export type TastytradeGetAllWatchlistResponse = WatchlistEntryWithSymbols[];
 
 export type TastytradeCreateWatchlistResponse = WatchlistEntry[];
