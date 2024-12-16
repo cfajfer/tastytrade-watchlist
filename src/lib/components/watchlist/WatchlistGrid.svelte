@@ -23,6 +23,22 @@
 		watchlistData: WatchlistData;
 	} = $props();
 
+	// This will provide a way to compare new data with rendered data
+	let previousData: WatchlistData = {};
+
+	const getCellClass = (symbol: string, key: 'bid' | 'ask' | 'last') => {
+		const previousValue = previousData[symbol]?.[key] ?? 0;
+		const currentValue = watchlistData[symbol]?.[key] ?? 0;
+		if (!currentValue || !previousValue) return '';
+		if (currentValue > previousValue) return 'text-green-500 transition-colors duration-500';
+		if (currentValue < previousValue) return 'text-red-500 transition-colors duration-500';
+		return '';
+	};
+
+	$effect(() => {
+		previousData = JSON.parse(JSON.stringify(watchlistData));
+	});
+
 	const fetchWatchlistSymbols = async (watchlistName = '') => {
 		const watchlistData = (await fetch(`/api/watchlist?query=${watchlistName}`).then((res) =>
 			res.json()
@@ -75,9 +91,15 @@
 						onclick={() => onClickRow(symbol)}
 					>
 						<TableBodyCell>{symbol}</TableBodyCell>
-						<TableBodyCell>{watchlistData[symbol]?.bid ?? '-'}</TableBodyCell>
-						<TableBodyCell>{watchlistData[symbol]?.ask ?? '-'}</TableBodyCell>
-						<TableBodyCell>{watchlistData[symbol]?.last ?? '-'}</TableBodyCell>
+						<TableBodyCell class={getCellClass(symbol, 'bid')}>
+							{Number(watchlistData[symbol]?.bid)?.toFixed(2) ?? '-'}
+						</TableBodyCell>
+						<TableBodyCell class={getCellClass(symbol, 'ask')}>
+							{Number(watchlistData[symbol]?.ask)?.toFixed(2) ?? '-'}
+						</TableBodyCell>
+						<TableBodyCell class={getCellClass(symbol, 'last')}>
+							{Number(watchlistData[symbol]?.last)?.toFixed(2) ?? '-'}
+						</TableBodyCell>
 						<TableBodyCell>
 							<button
 								onclick={(event) => {
